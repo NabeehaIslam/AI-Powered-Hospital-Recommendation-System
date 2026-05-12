@@ -70,6 +70,7 @@ def load_processed_data():
 # =========================
 # HEURISTIC + COST
 # =========================
+#These heuristic weights control how important each factor is during hospital ranking inside your A* recommendation algorithm.
 def heuristic(node: HospitalNode,w_sentiment=0.35,w_rating=0.40,w_volume=0.15,w_consistency=0.10,max_reviews=500):
 
     rating_norm = (node.avg_predicted_rating - 1.0) / 4.0

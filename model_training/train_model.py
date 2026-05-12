@@ -29,7 +29,7 @@ def preprocess_text(text):
     tokens = word_tokenize(text)
     # Remove stopwords
     stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
+    lemmatizer = WordNetLemmatizer()#goes to root form of the word
 
     tokens = [
         lemmatizer.lemmatize(word)
@@ -65,13 +65,19 @@ def main():
     )
     print("Extracting features (TF-IDF)...")
     vectorizer = TfidfVectorizer(max_features=9000,ngram_range=(1,2),min_df=2,max_df=0.9)
-    
+    #convert text into numeric vectors, max_features number of features to consider, 
+    # ngram_range 1:single word, 2=2 words combo to consider features
+    #  min_df ignores words that appear in less than 2 documents,
+    #  max_df ignores words that appear in more than 90% of documents
     # Fit and transform on sentiment training data, transform test data
     X_train_tfidf = vectorizer.fit_transform(X_train)
+    #fit learn the vocab and idf from the training data and transform it into tfidf features
     X_test_tfidf = vectorizer.transform(X_test)
 
     print("Training Sentiment Classification Model (Logistic Regression)...")
     sentiment_model = LogisticRegression(max_iter=2000,C=2,solver='lbfgs')
+    # c is regularization strength, smaller values specify stronger regularization, default is 1.0
+    #solver lbfgs is an optimization algorithm that handles multinomial loss for multi-class classification, and is efficient for large datasets. max_iter is the maximum number of iterations for the solver to converge, default is 100, but we set it to 2000 to ensure convergence given the dataset size and complexity.
     sentiment_model.fit(X_train_tfidf, y_train_s)
     y_pred_s = sentiment_model.predict(X_test_tfidf)
     acc = accuracy_score(y_test_s, y_pred_s)
